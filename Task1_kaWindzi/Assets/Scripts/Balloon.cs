@@ -9,6 +9,10 @@ public class Balloon : MonoBehaviour
 	private int m_iInitialLives;
 	private int m_iCurrentLives;
 
+	[SerializeField]
+	private float m_fDamageCooldown;
+	private Coroutine m_runningDamageCooldown;
+
 	private Rigidbody m_rigidBody;
 	private Wind m_wind;
 	private WindLine m_windLine;
@@ -22,6 +26,7 @@ public class Balloon : MonoBehaviour
 	private void Awake()
 	{
 		m_rigidBody = this.GetComponent<Rigidbody>();
+		m_iCurrentLives = m_iInitialLives;
 	}
 
 	private void FixedUpdate()
@@ -70,20 +75,38 @@ public class Balloon : MonoBehaviour
 	private void OnCollisionEnter(Collision collision)
 	{
 		Mountain mountain = collision.gameObject.GetComponent<Mountain>();
-
 		if (mountain != null && collision.relativeVelocity.magnitude > mountain.fMaxCollisionSpeed)
 		{
 			decreaseLives();
 			return;
 		}
+		
+		Spike spike = collision.gameObject.GetComponent<Spike>();
+		if (spike != null)
+		{
+			decreaseLives();
+		}
 	}
 
 	private void decreaseLives()
 	{
+		if (m_runningDamageCooldown != null)
+			return;
+
 		int iPrevLives = m_iCurrentLives;
 		m_iCurrentLives--;
 
 		OnLivesChanged?.Invoke(iPrevLives, m_iCurrentLives);
 		Debug.Log("Balloon lost a live. Remaining: " + m_iCurrentLives);
+
+		m_runningDamageCooldown = this.StartCoroutine(damageCooldown());
+	}
+
+	private IEnumerator damageCooldown()
+	{
+		yield return new WaitForSeconds(m_fDamageCooldown);
+
+		m_runningDamageCooldown = null;
+		Debug.Log("Damage cooldown over.");
 	}
 }

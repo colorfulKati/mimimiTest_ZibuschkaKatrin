@@ -54,20 +54,21 @@ public class WindManager : MimiBehaviour
 	{
 		Vector3 v3Direction = v3GetWindDirection();
 		float fStrength = fGetWindStrength(v3Direction.magnitude);
-		Vector3 v3Position = v3GetWindPosition();
+		Vector3 v3Position = v3GetWindPosition(v3Direction);
 
 		Wind windInstance = Instantiate(m_WindPrefab, this.m_transThis);
 
 		windInstance.Initialize(v3Position, fStrength, v3Direction);
 
 		if(m_bDestroyWind)
-			m_DestroyCoroutines.Add(this.StartCoroutine(DestroyCooldown(windInstance.gameObject)));
+			m_DestroyCoroutines.Add(this.StartCoroutine(destroyCooldown(windInstance.gameObject)));
 	}
 
-	private Vector3 v3GetWindPosition()
+	private Vector3 v3GetWindPosition(Vector3 _v3Direction)
 	{
-		Vector3 v3Position = m_Camera.ScreenToWorldPoint(m_v3PositionMouseUp);
+		Vector3 v3Position = m_Camera.ScreenToWorldPoint(m_v3PositionMouseDown);
 		v3Position.y = c_fWindPosY;
+		v3Position += _v3Direction / 2;
 		return v3Position;
 	}
 
@@ -89,7 +90,7 @@ public class WindManager : MimiBehaviour
 		return v3To - v3From;
 	}
 
-	private IEnumerator DestroyCooldown(GameObject _go)
+	private IEnumerator destroyCooldown(GameObject _go)
 	{
 		yield return new WaitForSeconds(m_fDestroyTime);
 
