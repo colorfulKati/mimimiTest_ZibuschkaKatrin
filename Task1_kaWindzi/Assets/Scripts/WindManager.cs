@@ -28,12 +28,32 @@ public class WindManager : MimiBehaviour
 	private DateTime m_DateTimeDown;
 	private DateTime m_DateTimeUp;
 
-	private List<Coroutine> m_DestroyCoroutines = new List<Coroutine>();
+	private List<Coroutine> m_listDestroyCoroutines = new List<Coroutine>();
+	private List<GameObject> m_listWinds = new List<GameObject>();
 
 	protected override void Awake()
 	{
 		base.Awake();
 		m_Camera = Camera.main;
+	}
+
+	private void Start()
+	{
+		Balloon.OnReset += reset;
+	}
+
+	private void reset()
+	{
+		StopAllCoroutines();
+		m_listDestroyCoroutines.Clear();
+
+		for (int i = m_listWinds.Count - 1; i >= 0; i--)
+		{
+			if (m_listWinds[i] != null)
+				Destroy(m_listWinds[i]);
+		}
+
+		m_listWinds.Clear();
 	}
 
 	private void Update()
@@ -62,8 +82,10 @@ public class WindManager : MimiBehaviour
 
 		windInstance.Initialize(v3Position, fStrength, v3Direction);
 
+		m_listWinds.Add(windInstance.gameObject);
+
 		if(m_bDestroyWind)
-			m_DestroyCoroutines.Add(this.StartCoroutine(destroyCooldown(windInstance.gameObject)));
+			m_listDestroyCoroutines.Add(this.StartCoroutine(destroyCooldown(windInstance.gameObject)));
 	}
 
 	private Vector3 v3GetWindPosition(Vector3 _v3Direction)
@@ -96,7 +118,10 @@ public class WindManager : MimiBehaviour
 	{
 		yield return new WaitForSeconds(m_fDestroyTime);
 
-		if(_go != null)
+		if (_go != null)
+		{
+			m_listWinds.Remove(_go);
 			Destroy(_go);
+		}
 	}
 }

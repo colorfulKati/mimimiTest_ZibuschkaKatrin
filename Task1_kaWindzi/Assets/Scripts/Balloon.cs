@@ -49,11 +49,11 @@ public class Balloon : MimiBehaviour
 	/// Fired, when the number of collected stars changed.
 	/// </summary>
 	public event Action OnStarsChanged;
-
+	
 	/// <summary>
-	/// Fired, when the balloon reached the goal.
+	/// Fired, when the balloon got reset.
 	/// </summary>
-	public event Action OnReachedGoal;
+	public static event Action OnReset;
 
 	protected override void Awake()
 	{
@@ -78,16 +78,25 @@ public class Balloon : MimiBehaviour
 
 	private void OnTriggerEnter(Collider _col)
 	{
+		Goal goal = _col.GetComponent<Goal>();
+		if (goal != null)
+		{
+			reachGoal();
+			return;
+		}
+
 		Wind wind = _col.GetComponent<Wind>();
 		if(wind != null)
 		{
 			m_wind = wind;
+			return;
 		}
 
-		Goal goal = _col.GetComponent<Goal>();
-		if(goal != null)
+		Star star = _col.GetComponent<Star>();
+		if(star != null)
 		{
-			reachGoal();
+			star.collect();
+			iCurrentStars++;
 		}
 
 		//WindLine windLine = _col.GetComponent<WindLine>();
@@ -134,13 +143,13 @@ public class Balloon : MimiBehaviour
 		m_rigidBody.velocity = Vector3.zero;
 		iCurrentLives = m_iInitialLives;
 		iCurrentStars = 0;
+
+		OnReset?.Invoke();
 	}
 
 	private void reachGoal()
 	{
-		OnReachedGoal?.Invoke();
 		Debug.Log("Balloon reached the goal.");
-
 		reset();
 	}
 
