@@ -16,6 +16,11 @@ public class Star : MonoBehaviour
 		Balloon.OnReset += reset;
 	}
 
+	private void OnDestroy()
+	{
+		Balloon.OnReset -= reset;
+	}
+
 	public void collect()
 	{
 		gameObject.SetActive(false);

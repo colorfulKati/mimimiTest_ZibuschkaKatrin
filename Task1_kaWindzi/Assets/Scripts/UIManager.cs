@@ -26,6 +26,15 @@ public class UIManager : MonoBehaviour
 		onLivesChanged();
 	}
 
+	private void OnDestroy()
+	{
+		if(m_Balloon != null)
+		{
+			m_Balloon.OnLivesChanged -= onLivesChanged;
+			m_Balloon.OnStarsChanged -= onStarsChanged;
+		}
+	}
+
 	private void onLivesChanged()
 	{
 		updateDisplay(m_transLivesContainer, m_goLifePrefab, m_Balloon.iCurrentLives);

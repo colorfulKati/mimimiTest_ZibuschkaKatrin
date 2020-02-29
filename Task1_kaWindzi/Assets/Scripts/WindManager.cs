@@ -42,6 +42,11 @@ public class WindManager : MimiBehaviour
 		Balloon.OnReset += reset;
 	}
 
+	private void OnDestroy()
+	{
+		Balloon.OnReset -= reset;
+	}
+
 	private void reset()
 	{
 		StopAllCoroutines();
