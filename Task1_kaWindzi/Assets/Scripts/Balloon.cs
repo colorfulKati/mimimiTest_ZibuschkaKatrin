@@ -9,7 +9,7 @@ public class Balloon : MonoBehaviour
 
 	private void Awake()
 	{
-		m_rigidBody = GetComponent<Rigidbody>();
+		m_rigidBody = this.GetComponent<Rigidbody>();
 	}
 
 	private void FixedUpdate()
