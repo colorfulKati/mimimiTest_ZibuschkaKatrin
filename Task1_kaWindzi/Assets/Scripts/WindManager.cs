@@ -17,6 +17,8 @@ public class WindManager : MimiBehaviour
 
 	[SerializeField]
 	private float m_fStrengthMultiplier;
+	[SerializeField]
+	private float m_fMaxStrength;
 
 	private Camera m_Camera;
 
@@ -76,7 +78,7 @@ public class WindManager : MimiBehaviour
 	{
 		TimeSpan timeDiff = m_DateTimeUp - m_DateTimeDown;
 
-		return (float)(_fDistance / timeDiff.TotalSeconds) * m_fStrengthMultiplier;
+		return Mathf.Min((float)(_fDistance / timeDiff.TotalSeconds) * m_fStrengthMultiplier, m_fMaxStrength);
 	}
 
 	private Vector3 v3GetWindDirection()

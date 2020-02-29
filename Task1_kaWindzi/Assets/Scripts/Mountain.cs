@@ -5,11 +5,11 @@ using UnityEngine;
 public class Mountain : MonoBehaviour
 {
 	[SerializeField]
-	private float m_fMaxCollisionSpeed;
+	private float m_fSpeedThresholdForDamage;
 
-	public float fMaxCollisionSpeed
+	public float fSpeedThresholdForDamage
 	{
-		get { return m_fMaxCollisionSpeed; }
-		private set { m_fMaxCollisionSpeed = value; }
+		get { return m_fSpeedThresholdForDamage; }
+		private set { m_fSpeedThresholdForDamage = value; }
 	}
 }

@@ -115,7 +115,7 @@ public class Balloon : MimiBehaviour
 	private void OnCollisionEnter(Collision collision)
 	{
 		Mountain mountain = collision.gameObject.GetComponent<Mountain>();
-		if (mountain != null && collision.relativeVelocity.magnitude > mountain.fMaxCollisionSpeed)
+		if (mountain != null && collision.relativeVelocity.magnitude > mountain.fSpeedThresholdForDamage)
 		{
 			decreaseLives();
 			return;
@@ -130,8 +130,9 @@ public class Balloon : MimiBehaviour
 
 	private void reset()
 	{
-		iCurrentLives = m_iInitialLives;
 		m_transThis.position = m_v3InitialPosition;
+		m_rigidBody.velocity = Vector3.zero;
+		iCurrentLives = m_iInitialLives;
 		iCurrentStars = 0;
 	}
 
