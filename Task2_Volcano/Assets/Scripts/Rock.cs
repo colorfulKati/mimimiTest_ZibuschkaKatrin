@@ -8,6 +8,9 @@ public class Rock : MonoBehaviour
 	private static WaitForSeconds s_WaitSeconds = new WaitForSeconds(c_fDestroyDelay);
 	private static WaitForEndOfFrame s_WaitEndOfFrame = new WaitForEndOfFrame();
 
+	[SerializeField]
+	private bool m_bDestroyOnCollision = false;
+
 	private Collider m_collider;
 	
 	private void Awake()
@@ -17,7 +20,8 @@ public class Rock : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		//this.StartCoroutine(destroyDelayed());
+		if(m_bDestroyOnCollision)
+			this.StartCoroutine(destroyDelayed());
 	}
 
 	private IEnumerator destroyDelayed()
