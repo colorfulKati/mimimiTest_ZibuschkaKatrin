@@ -11,13 +11,13 @@ public class UIManager : MonoBehaviour
 
 	private void Start()
 	{
-		PlayerController.OnPlayerKeyCodeChanged += onPlayerKeyCodeChanged;
+		PlayerController.OnPlayerNextDanceMoveChanged += onPlayerNextDanceMoveChanged;
 		PlayerController.OnPlayerFinished += onPlayerFinished;
 	}
 
 	private void OnDestroy()
 	{
-		PlayerController.OnPlayerKeyCodeChanged -= onPlayerKeyCodeChanged;
+		PlayerController.OnPlayerNextDanceMoveChanged -= onPlayerNextDanceMoveChanged;
 		PlayerController.OnPlayerFinished -= onPlayerFinished;
 	}
 
@@ -26,7 +26,7 @@ public class UIManager : MonoBehaviour
 		updateText(_iPlayerIndex - 1, "Finished!");
 	}
 
-	private void onPlayerKeyCodeChanged(int _iPlayerIndex, string _strKeyCode)
+	private void onPlayerNextDanceMoveChanged(int _iPlayerIndex, string _strKeyCode)
 	{
 		updateText(_iPlayerIndex - 1, _strKeyCode);
 	}
