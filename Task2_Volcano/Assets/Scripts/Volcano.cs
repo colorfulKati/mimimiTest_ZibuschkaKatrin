@@ -6,7 +6,19 @@ public class Volcano : MimiBehaviour
 {
 	[SerializeField]
 	private Rigidbody m_rigidRockPrefab;
-	
+	[SerializeField]
+	private float m_fStrengthMin;
+	[SerializeField]
+	private float m_fStrengthMax;
+	[SerializeField]
+	private float m_fHorizontalMin;
+	[SerializeField]
+	private float m_fHorizontalMax;
+	[SerializeField]
+	private float m_fVerticalMin;
+	[SerializeField]
+	private float m_fVerticalMax;
+
 	private WaitForSeconds m_wait = new WaitForSeconds(0.05f);
 
 	private void Update()
@@ -24,13 +36,13 @@ public class Volcano : MimiBehaviour
 		// Generate random direction
 		int iSignX = Random.Range(0, 2) * 2 - 1;
 		int iSignZ = Random.Range(0, 2) * 2 - 1;
-		float fX = iSignX * Random.Range(0.30f, 1.0f);
-		float fY = Random.Range(0.30f, 1.0f);
-		float fZ = iSignZ * Random.Range(0.30f, 1.0f);
+		float fX = iSignX * Random.Range(m_fHorizontalMin, m_fHorizontalMax);
+		float fY = Random.Range(m_fVerticalMin, m_fVerticalMax);
+		float fZ = iSignZ * Random.Range(m_fHorizontalMin, m_fHorizontalMax);
 		Vector3 v3Direction = new Vector3(fX, fY, fZ).normalized;
 
 		// Generate random strength
-		float fStrength = Random.Range(15000f, 20000f);
+		float fStrength = Random.Range(m_fStrengthMin, m_fStrengthMax);
 
 		// Apply force
 		_rigidRock.AddForce(v3Direction * fStrength);

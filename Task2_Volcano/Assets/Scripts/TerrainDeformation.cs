@@ -107,8 +107,6 @@ public class TerrainDeformation : MimiBehaviour
 
 	private void deformHeightsGradientMode(float[,] _arHeights, int _iPointX, int _iPointY, Vector2Int _v2ColliderDimension)
 	{
-		_arHeights[_iPointX, _iPointY] -= m_DeformationData.fIndentDepth;
-
 		float fIndentDepth = m_DeformationData.fIndentDepth;
 		float[] arIndentMultiplier = { 1f, 4f / 5, 3f / 5, 2f / 5, 1f / 5 };
 

@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da0c30f73cd614d449a1dfc0751f4849, type: 3}
   m_Name: TerrainDeformationData
   m_EditorClassIdentifier: 
-  m_eDeformationMode: 0
+  m_eDeformationMode: 4
   m_fIndentDepth: 0.01
