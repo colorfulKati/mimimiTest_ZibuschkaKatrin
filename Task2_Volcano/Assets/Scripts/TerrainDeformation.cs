@@ -6,8 +6,6 @@ using UnityEngine;
 public class TerrainDeformation : MimiBehaviour
 {
 	[SerializeField]
-	private bool m_bDebugLog = false;
-	[SerializeField]
 	private TerrainDeformationData m_DeformationData;
 
 	private Terrain m_Terrain;
@@ -41,32 +39,30 @@ public class TerrainDeformation : MimiBehaviour
 		Vector3 v3LocalPoint = v3GetCollisionPointInLocalSpace(v3WorldPoint);
 		Vector2Int v2HeightmapPoint = v2GetPointInHeightmapSpace(v3LocalPoint);
 
-		if (m_bDebugLog)
-		{
-			Debug.Log("World contact point: " + v3WorldPoint);
-			Debug.Log("Local contact point: " + v3LocalPoint);
-			Debug.Log("Heightmap contact point: " + v2HeightmapPoint);
-		}
-
 		// Get current heightmap
 		float[,] arHeights = m_TerrainData.GetHeights(0, 0, m_iHeightmapResolution, m_iHeightmapResolution);
 
 		// Calculate deformation depending on mode
-		if (m_DeformationData.eDeformationMode == DeformationMode.Point)
+		switch (m_DeformationData.eDeformationMode)
 		{
-			deformHeightsPointMode(arHeights, v2HeightmapPoint);
+			case DeformationMode.Point:
+				deformHeightsPointMode(arHeights, v2HeightmapPoint);
+				break;
+			case DeformationMode.Rect:
+				Vector2Int v2ColliderDimension = v2GetPointInHeightmapSpace(contactPoint.otherCollider.bounds.size);
+				deformHeightsRectMode(arHeights, v2HeightmapPoint.x, v2HeightmapPoint.y, v2ColliderDimension);
+				break;
+			case DeformationMode.HalfRect:
+				v2ColliderDimension = v2GetPointInHeightmapSpace(contactPoint.otherCollider.bounds.size) / 2;
+				deformHeightsRectMode(arHeights, v2HeightmapPoint.x, v2HeightmapPoint.y, v2ColliderDimension);
+				break;
+			case DeformationMode.Cross:
+				deformHeightsCrossMode(arHeights, v2HeightmapPoint.x, v2HeightmapPoint.y);
+				break;
+			default:
+				break;
 		}
-		else if (m_DeformationData.eDeformationMode == DeformationMode.Rect)
-		{
-			Vector2Int v2ColliderDimension = v2GetPointInHeightmapSpace(contactPoint.otherCollider.bounds.size);
-			deformHeightsRectMode(arHeights, v2HeightmapPoint, v2ColliderDimension);
-		}
-		else if(m_DeformationData.eDeformationMode == DeformationMode.HalfRect)
-		{
-			Vector2Int v2ColliderDimension = v2GetPointInHeightmapSpace(contactPoint.otherCollider.bounds.size) / 2;
-			deformHeightsRectMode(arHeights, v2HeightmapPoint, v2ColliderDimension);
-		}
-	
+
 		// Apply deformation
 		m_TerrainData.SetHeights(0, 0, arHeights);
 	}
@@ -90,12 +86,26 @@ public class TerrainDeformation : MimiBehaviour
 		_arHeights[_v2HeightmapPoint.x, _v2HeightmapPoint.y] -= m_DeformationData.fIndentDepth;
 	}
 
-	private void deformHeightsRectMode(float[,] _arHeights, Vector2Int _v2HeightmapPoint, Vector2Int _v2ColliderDimension)
+	private void deformHeightsCrossMode(float[,] _arHeights, int _iX, int _iY)
 	{
-		int iStartX = Mathf.Max(_v2HeightmapPoint.x - _v2ColliderDimension.x / 2, 0);
-		int iStartY = Mathf.Max(_v2HeightmapPoint.y - _v2ColliderDimension.y / 2, 0);
-		int iEndX = Mathf.Min(_v2HeightmapPoint.x + _v2ColliderDimension.x / 2, m_iHeightmapResolution);
-		int iEndY = Mathf.Min(_v2HeightmapPoint.y + _v2ColliderDimension.y / 2, m_iHeightmapResolution);
+		_arHeights[_iX, _iY] -= m_DeformationData.fIndentDepth;
+
+		if (_iX > 0)
+			_arHeights[_iX - 1, _iY] -= m_DeformationData.fIndentDepth / 2;
+		if (_iY > 0)
+			_arHeights[_iX, _iY - 1] -= m_DeformationData.fIndentDepth / 2;
+		if (_iX < m_iHeightmapResolution - 1)
+			_arHeights[_iX + 1, _iY] -= m_DeformationData.fIndentDepth / 2;
+		if (_iX < m_iHeightmapResolution - 1)
+			_arHeights[_iX, _iY + 1] -= m_DeformationData.fIndentDepth / 2;
+	}
+
+	private void deformHeightsRectMode(float[,] _arHeights, int _iPointX, int _iPointY, Vector2Int _v2ColliderDimension)
+	{
+		int iStartX = Mathf.Max(_iPointX - _v2ColliderDimension.x / 2, 0);
+		int iStartY = Mathf.Max(_iPointY - _v2ColliderDimension.y / 2, 0);
+		int iEndX = Mathf.Min(_iPointX + _v2ColliderDimension.x / 2, m_iHeightmapResolution);
+		int iEndY = Mathf.Min(_iPointY + _v2ColliderDimension.y / 2, m_iHeightmapResolution);
 
 		float fHeight;
 		for (int iX = iStartX; iX < iEndX; iX++)
@@ -113,6 +123,7 @@ public class TerrainDeformation : MimiBehaviour
 	{
 		Point,
 		Rect,
-		HalfRect
+		HalfRect,
+		Cross
 	}
 }

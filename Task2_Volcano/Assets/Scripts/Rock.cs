@@ -6,10 +6,11 @@ public class Rock : MonoBehaviour
 {
 	private const float c_fDestroyDelay = 2f;
 	private static WaitForSeconds s_WaitSeconds = new WaitForSeconds(c_fDestroyDelay);
-	private static WaitForEndOfFrame s_WaitEndOfFrame = new WaitForEndOfFrame();
+	private Coroutine m_DestroyRoutine;
 
 	[SerializeField]
-	private bool m_bDestroyOnCollision = false;
+	private int m_iDestroyOnCollisionCount = 0;
+	private int m_iCollisionCount = 0;
 
 	private Collider m_collider;
 	
@@ -20,8 +21,10 @@ public class Rock : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		if(m_bDestroyOnCollision)
-			this.StartCoroutine(destroyDelayed());
+		m_iCollisionCount++;
+
+		if(m_iDestroyOnCollisionCount > 0 && m_iCollisionCount >= m_iDestroyOnCollisionCount && m_DestroyRoutine == null)
+			m_DestroyRoutine = this.StartCoroutine(destroyDelayed());
 	}
 
 	private IEnumerator destroyDelayed()
@@ -29,6 +32,7 @@ public class Rock : MonoBehaviour
 		m_collider.enabled = false;
 		yield return s_WaitSeconds;
 
+		m_DestroyRoutine = null;
 		Destroy(this.gameObject);
 	}
 }
