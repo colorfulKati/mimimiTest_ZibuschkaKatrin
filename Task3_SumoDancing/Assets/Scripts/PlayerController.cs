@@ -15,6 +15,12 @@ public class PlayerController : MonoBehaviour
 	public static event Action<int, string> OnPlayerNextDanceMoveChanged;
 
 	/// <summary>
+	/// Raised, when a player performed a dance move.
+	/// Parameters: player index, true if the performed dance move was correct
+	/// </summary>
+	public static event Action<int, bool> OnPlayerPerformedMove;
+	
+	/// <summary>
 	/// Raised, when a player is finished.
 	/// Parameters: player index
 	/// </summary>
@@ -22,10 +28,10 @@ public class PlayerController : MonoBehaviour
 
 	[SerializeField]
 	private int m_iPlayerIndex;
-
 	[SerializeField]
 	private DanceSequenceGenerator m_DanceSequenceGenerator;
 
+	[Header("Key Codes")]
 	[SerializeField]
 	private KeyCode m_KeyLeft;
 	[SerializeField]
@@ -35,6 +41,7 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private KeyCode m_KeyDown;
 
+	[Header("Sprite Rendering")]
 	[SerializeField]
 	private SpriteRenderer m_SpriteRenderer;
 
@@ -48,7 +55,7 @@ public class PlayerController : MonoBehaviour
 	private Sprite m_SpriteDown;
 	[SerializeField]
 	private Sprite m_SpriteWrongMove;
-
+	
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
 	private Dictionary<DanceMoves, KeyCode> m_MoveToKey = new Dictionary<DanceMoves, KeyCode>();
 
@@ -98,11 +105,14 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKeyDown(m_CurrentKeyCode))
 		{
 			m_SpriteRenderer.sprite = m_KeyToSprite[m_CurrentKeyCode];
+			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, true);
+
 			iCurrentMoveIndex++;
 		}
 		else if (Input.GetKeyDown(m_KeyLeft) || Input.GetKeyDown(m_KeyRight) || Input.GetKeyDown(m_KeyUp) || Input.GetKeyDown(m_KeyDown))
 		{
 			m_SpriteRenderer.sprite = m_SpriteWrongMove;
+			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, false);
 		}
 	}
 }
