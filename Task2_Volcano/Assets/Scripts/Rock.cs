@@ -17,9 +17,7 @@ public class Rock : MonoBehaviour
 
 	private void OnCollisionEnter(Collision collision)
 	{
-		Debug.Log("Rock collided with something.");
-
-		this.StartCoroutine(destroyDelayed());
+		//this.StartCoroutine(destroyDelayed());
 	}
 
 	private IEnumerator destroyDelayed()

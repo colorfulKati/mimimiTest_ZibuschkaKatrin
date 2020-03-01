@@ -37,9 +37,7 @@ public class TerrainDeformation : MimiBehaviour
 		Vector2Int v2HeightmapSpace = v2GetPointInHeightmapSpace(v3LocalPoint);
 		Debug.Log("Heightmap contact point: " + v2HeightmapSpace);
 
-		Debug.Log("Heightmap before: " + arHeights[v2HeightmapSpace.x, v2HeightmapSpace.y]);
 		arHeights[v2HeightmapSpace.x, v2HeightmapSpace.y] *= 0.5f;
-		Debug.Log("Heightmap after: " + arHeights[v2HeightmapSpace.x, v2HeightmapSpace.y]);
 
 		m_TerrainData.SetHeights(0, 0, arHeights);
 	}
@@ -57,7 +55,7 @@ public class TerrainDeformation : MimiBehaviour
 		int iX = (int)(_v3LocalPoint.x * m_iHeightmapResolution / m_v3TerrainSize.x);
 		int iY = (int)(_v3LocalPoint.z * m_iHeightmapResolution / m_v3TerrainSize.z);
 
-		Vector2Int v2HeightmapSpace = new Vector2Int(iX, iY);
+		Vector2Int v2HeightmapSpace = new Vector2Int(iY, iX);
 		return v2HeightmapSpace;
 	}
 }
