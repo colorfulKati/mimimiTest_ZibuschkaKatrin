@@ -502,13 +502,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
-  m_LocalRotation: {x: 0.40821788, y: -0.23456968, z: 0.10938163, w: 0.8754261}
+  m_LocalRotation: {x: 0.18934281, y: 0.7535896, z: -0.24631098, w: 0.5792952}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: 36.2, y: 104.9, z: 0}
 --- !u!1 &730749187
 GameObject:
   m_ObjectHideFlags: 0
@@ -957,8 +957,8 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
+  near clip plane: 100
+  far clip plane: 3000
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -984,13 +984,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0.320108, y: -0.087940365, z: 0.029855926, w: 0.94281816}
-  m_LocalPosition: {x: 550.52045, y: 453.03015, z: 165.55054}
+  m_LocalRotation: {x: 0.016595896, y: 0.940932, z: -0.046613544, w: 0.33496082}
+  m_LocalPosition: {x: -324.87683, y: 270.16223, z: 1434.1163}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 38.2, y: 170.031, z: 0}
 --- !u!1 &1136763079
 GameObject:
   m_ObjectHideFlags: 0
@@ -1022,6 +1022,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_rigidRockPrefab: {fileID: 7173754460593591913, guid: b92f5201b1925c54892ee31039ee5ec9,
     type: 3}
+  m_fStrengthMin: 35000
+  m_fStrengthMax: 40000
+  m_fHorizontalMin: 0.1
+  m_fHorizontalMax: 0.6
+  m_fVerticalMin: 0.4
+  m_fVerticalMax: 1
 --- !u!4 &1136763081
 Transform:
   m_ObjectHideFlags: 0
@@ -1030,7 +1036,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1136763079}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 500, y: 300, z: 500}
+  m_LocalPosition: {x: 526, y: 418.58, z: 513}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1285,7 +1291,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 963194227}
-  m_PlaneDistance: 100
+  m_PlaneDistance: 200
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
