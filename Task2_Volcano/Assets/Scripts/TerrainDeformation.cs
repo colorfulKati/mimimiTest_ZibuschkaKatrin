@@ -59,6 +59,11 @@ public class TerrainDeformation : MimiBehaviour
 			case DeformationMode.Cross:
 				deformHeightsCrossMode(arHeights, v2HeightmapPoint.x, v2HeightmapPoint.y);
 				break;
+
+			case DeformationMode.Gradient:
+				v2ColliderDimension = v2GetPointInHeightmapSpace(contactPoint.otherCollider.bounds.size) / 2;
+				deformHeightsGradientMode(arHeights, v2HeightmapPoint.x, v2HeightmapPoint.y, v2ColliderDimension);
+				break;
 			default:
 				break;
 		}
@@ -100,6 +105,35 @@ public class TerrainDeformation : MimiBehaviour
 			_arHeights[_iX, _iY + 1] -= m_DeformationData.fIndentDepth / 2;
 	}
 
+	private void deformHeightsGradientMode(float[,] _arHeights, int _iPointX, int _iPointY, Vector2Int _v2ColliderDimension)
+	{
+		_arHeights[_iPointX, _iPointY] -= m_DeformationData.fIndentDepth;
+
+		float fIndentDepth = m_DeformationData.fIndentDepth;
+		float[] arIndentMultiplier = { 1f, 4f / 5, 3f / 5, 2f / 5, 1f / 5 };
+
+		int iStartX = Mathf.Max(_iPointX - _v2ColliderDimension.x / 2 - 3, 0);
+		int iStartY = Mathf.Max(_iPointY - _v2ColliderDimension.y / 2 - 3, 0);
+		int iEndX = Mathf.Min(_iPointX + _v2ColliderDimension.x / 2 + 3, m_iHeightmapResolution);
+		int iEndY = Mathf.Min(_iPointY + _v2ColliderDimension.y / 2 + 3, m_iHeightmapResolution);
+
+		float fHeight;
+		int iDistance;
+		for (int iX = iStartX; iX < iEndX; iX++)
+		{
+			for (int iY = iStartY; iY < iEndY; iY++)
+			{
+				iDistance = Math.Abs(_iPointX - iX) + Math.Abs(_iPointY - iY);
+				if (iDistance >= arIndentMultiplier.Length)
+					continue;
+
+				fHeight = _arHeights[iX, iY];
+				fHeight -= fIndentDepth * arIndentMultiplier[iDistance];
+				_arHeights[iX, iY] = Mathf.Max(fHeight, 0f);
+			}
+		}
+	}
+
 	private void deformHeightsRectMode(float[,] _arHeights, int _iPointX, int _iPointY, Vector2Int _v2ColliderDimension)
 	{
 		int iStartX = Mathf.Max(_iPointX - _v2ColliderDimension.x / 2, 0);
@@ -124,6 +158,7 @@ public class TerrainDeformation : MimiBehaviour
 		Point,
 		Rect,
 		HalfRect,
-		Cross
+		Cross,
+		Gradient
 	}
 }

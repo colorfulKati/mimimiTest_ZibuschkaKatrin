@@ -19,7 +19,7 @@ public class Rock : MonoBehaviour
 		m_collider = this.GetComponent<Collider>();
 	}
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnCollisionEnter(Collision _Collision)
 	{
 		m_iCollisionCount++;
 
