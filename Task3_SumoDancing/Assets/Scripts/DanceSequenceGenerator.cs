@@ -2,18 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-//[CreateAssetMenu(fileName = "New DanceSequenceGenerator", menuName = "ScriptableObjects/DanceSequenceGenerator")]
-public class DanceSequenceGenerator : MonoBehaviour
+[CreateAssetMenu(fileName = "New DanceSequenceGenerator", menuName = "ScriptableObjects/DanceSequenceGenerator")]
+public class DanceSequenceGenerator : ScriptableObject
 {
 	[SerializeField]
 	private int m_iSequenceLength;
 
 	public List<DanceMove[]> m_listMoveSequences = new List<DanceMove[]>();
-
-	private void Awake()
-	{
-		generateMoveSequences();
-	}
 
 	public void generateMoveSequences()
 	{
