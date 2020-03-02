@@ -6,7 +6,6 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
 	private const int c_iNotStartedIndex = -1;
-	private const int c_iFinishedIndex = -2;
 	private const float c_fNextMoveDelay = 0.15f;
 
 	private static WaitForSeconds m_WaitForSeconds = new WaitForSeconds(c_fNextMoveDelay);
@@ -34,6 +33,8 @@ public class PlayerController : MonoBehaviour
 	/// Parameters: player index, finished sequence index
 	/// </summary>
 	public static event Action<int, int> OnPlayerFinishedSequence;
+
+	public static Color[] m_PlayerColor = new[] { Color.blue, Color.red };
 
 	[SerializeField]
 	private int m_iPlayerIndex;
@@ -96,9 +97,13 @@ public class PlayerController : MonoBehaviour
 			// Check whether all sequences were finished, or a new one should begin
 			if (m_iCurrentSequenceIndex >= m_DanceSequenceGenerator.m_listMoveSequences.Count)
 			{
-				m_iCurrentSequenceIndex = c_iFinishedIndex;
-				iCurrentMoveIndex = c_iFinishedIndex;
+				m_iCurrentSequenceIndex = c_iNotStartedIndex;
+				iCurrentMoveIndex = c_iNotStartedIndex;
 				OnPlayerFinished?.Invoke(m_iPlayerIndex);
+			}
+			else if(m_iCurrentSequenceIndex == c_iNotStartedIndex)
+			{
+				iCurrentMoveIndex = c_iNotStartedIndex;
 			}
 			else 
 			{
@@ -121,7 +126,7 @@ public class PlayerController : MonoBehaviour
 			{
 				iCurrentSequenceIndex++;
 			}
-			else if (m_iCurrentMoveIndex == c_iFinishedIndex || m_iCurrentMoveIndex == c_iNotStartedIndex)
+			else if (m_iCurrentMoveIndex == c_iNotStartedIndex)
 			{
 				m_CurrentKeyCode = KeyCode.None;
 			}
@@ -133,7 +138,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	private void Start()
+	private void Awake()
 	{
 		m_MoveToKey.Add(DanceMove.Left, m_KeyLeft);
 		m_MoveToKey.Add(DanceMove.Right, m_KeyRight);
@@ -146,11 +151,21 @@ public class PlayerController : MonoBehaviour
 		m_KeyToSprite.Add(m_KeyDown, m_SpriteDown);
 	}
 
+	private void Start()
+	{
+		GameStateController.OnGameStateChanged += onGameStateChanged;
+	}
+
+	private void OnDestroy()
+	{
+		GameStateController.OnGameStateChanged -= onGameStateChanged;
+	}
+
 	private void Update()
 	{
-		if (iCurrentSequenceIndex == c_iNotStartedIndex)
-			iCurrentSequenceIndex = 0;
-
+		if (GameStateController.eCurrentState != GameState.InGame)
+			return;
+		
 		if (eCurrentDanceMove == DanceMove.None)
 			return;
 
@@ -176,5 +191,13 @@ public class PlayerController : MonoBehaviour
 		yield return m_WaitForSeconds;
 
 		iCurrentMoveIndex++;
+	}
+
+	private void onGameStateChanged(GameState _ePrevState, GameState _eCurrentState)
+	{
+		if (_eCurrentState == GameState.InGame)
+		{
+			iCurrentSequenceIndex = 0;
+		}
 	}
 }

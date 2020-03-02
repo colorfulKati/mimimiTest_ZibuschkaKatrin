@@ -16,17 +16,21 @@ public class AudioManager : MonoBehaviour
 	private AudioClip m_ClipCorrect;
 	[SerializeField]
 	private AudioClip m_ClipWrong;
-	
+	[SerializeField]
+	private AudioClip m_ClipSlime;
+
 	private void Start()
 	{
 		PlayerController.OnPlayerPerformedMove += onPlayerPerformedMove;
 		PlayerController.OnPlayerFinished += onPlayerFinished;
+		SlimeController.OnAddedSlime += onAddedSlime;
 	}
 
 	private void OnDestroy()
 	{
 		PlayerController.OnPlayerPerformedMove -= onPlayerPerformedMove;
 		PlayerController.OnPlayerFinished -= onPlayerFinished;
+		SlimeController.OnAddedSlime -= onAddedSlime;
 	}
 
 	private void onPlayerFinished(int _iPlayerIndex)
@@ -37,5 +41,10 @@ public class AudioManager : MonoBehaviour
 	private void onPlayerPerformedMove(int _iPlayerIndex, bool _bCorrect)
 	{
 		m_SFXSource.PlayOneShot(_bCorrect ? m_ClipCorrect : m_ClipWrong);
+	}
+
+	private void onAddedSlime()
+	{
+		m_SFXSource.PlayOneShot(m_ClipSlime);
 	}
 }
