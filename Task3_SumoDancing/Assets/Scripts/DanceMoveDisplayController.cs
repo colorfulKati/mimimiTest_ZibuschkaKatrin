@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -32,15 +33,25 @@ public class DanceMoveDisplayController : MonoBehaviour
 	private void Start()
 	{
 		PlayerController.OnPlayerNextDanceMoveChanged += updateDirection;
+		PlayerController.OnPlayerFinished += onFinished;
 	}
 
 	private void OnDestroy()
 	{
 		PlayerController.OnPlayerNextDanceMoveChanged -= updateDirection;
+		PlayerController.OnPlayerFinished -= onFinished;
 	}
 
 	private void updateDirection(int _iPlayerIndex, DanceMove _eDanceMove)
 	{
 		m_arDirections[_iPlayerIndex - 1].transform.eulerAngles = m_MoveToRotation[_eDanceMove];
+	}
+	
+	private void onFinished(int _iPlayerIndex)
+	{
+		foreach (SpriteRenderer renderer in m_arDisplayBackgrounds)
+		{
+			renderer.gameObject.SetActive(false);
+		}
 	}
 }

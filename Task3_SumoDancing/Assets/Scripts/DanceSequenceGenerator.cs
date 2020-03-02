@@ -8,20 +8,23 @@ public class DanceSequenceGenerator : MonoBehaviour
 	[SerializeField]
 	private int m_iSequenceLength;
 
-	private DanceMove[] m_arDanceSequence;
-
-	public IReadOnlyList<DanceMove> listDanceSequence
-	{
-		get { return System.Array.AsReadOnly(m_arDanceSequence); }
-	}
+	public List<DanceMove[]> m_listMoveSequences = new List<DanceMove[]>();
 
 	private void Awake()
 	{
-		m_arDanceSequence = new DanceMove[m_iSequenceLength];
+		generateMoveSequences();
+	}
 
-		for (int i = 0; i < m_iSequenceLength; i++)
+	public void generateMoveSequences()
+	{
+		m_listMoveSequences.Clear();
+		for (int i = 0; i < SlimeController.c_iNumberOfStages; i++)
 		{
-			m_arDanceSequence[i] = (DanceMove)Random.Range(0, 4);
+			m_listMoveSequences.Add(new DanceMove[m_iSequenceLength]);
+			for (int j = 0; j < m_iSequenceLength; j++)
+			{
+				m_listMoveSequences[i][j] = (DanceMove)Random.Range(0, 4);
+			}
 		}
 	}
 }

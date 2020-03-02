@@ -21,10 +21,16 @@ public class PlayerController : MonoBehaviour
 	public static event Action<int, bool> OnPlayerPerformedMove;
 	
 	/// <summary>
-	/// Raised, when a player is finished.
+	/// Raised, when a player is completely finished.
 	/// Parameters: player index
 	/// </summary>
 	public static event Action<int> OnPlayerFinished;
+
+	/// <summary>
+	/// Raised, when a player finished a sequence.
+	/// Parameters: player index, finished sequence index
+	/// </summary>
+	public static event Action<int, int> OnPlayerFinishedSequence;
 
 	[SerializeField]
 	private int m_iPlayerIndex;
@@ -59,8 +65,38 @@ public class PlayerController : MonoBehaviour
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
 	private Dictionary<DanceMove, KeyCode> m_MoveToKey = new Dictionary<DanceMove, KeyCode>();
 
+	private DanceMove[] m_arCurrentSequence;
 	private KeyCode m_CurrentKeyCode = KeyCode.None;
 	private DanceMove m_eCurrentDanceMove = DanceMove.None;
+
+	private int m_iCurrentSequenceIndex = c_iNotStartedIndex;
+	private int iCurrentSequenceIndex
+	{ get { return m_iCurrentSequenceIndex; }
+		set
+		{
+			int iPrevSequenceIndex = m_iCurrentSequenceIndex;
+			m_iCurrentSequenceIndex = value;
+
+			// Do not count the "not started sequence" as finished sequence on start
+			if (m_iCurrentSequenceIndex > iPrevSequenceIndex && iPrevSequenceIndex >= 0)
+				OnPlayerFinishedSequence?.Invoke(m_iPlayerIndex, iPrevSequenceIndex);
+
+			// Check whether all sequences were finished, or a new one should begin
+			if (m_iCurrentSequenceIndex >= m_DanceSequenceGenerator.m_listMoveSequences.Count)
+			{
+				m_iCurrentSequenceIndex = c_iFinishedIndex;
+				iCurrentMoveIndex = c_iFinishedIndex;
+				OnPlayerFinished?.Invoke(m_iPlayerIndex);
+			}
+			else 
+			{
+				m_arCurrentSequence = m_DanceSequenceGenerator.m_listMoveSequences[m_iCurrentSequenceIndex];
+				iCurrentMoveIndex = 0;
+			}
+		}
+	}
+
+
 	private int m_iCurrentMoveIndex = c_iNotStartedIndex;
 	private int iCurrentMoveIndex
 	{
@@ -69,15 +105,17 @@ public class PlayerController : MonoBehaviour
 		{
 			m_iCurrentMoveIndex = value;
 
-			if (m_iCurrentMoveIndex >= m_DanceSequenceGenerator.listDanceSequence.Count)
+			if (m_iCurrentMoveIndex >= m_arCurrentSequence.Length)
 			{
-				m_iCurrentMoveIndex = c_iFinishedIndex;
+				iCurrentSequenceIndex++;
+			}
+			else if (m_iCurrentMoveIndex == c_iFinishedIndex || m_iCurrentMoveIndex == c_iNotStartedIndex)
+			{
 				m_CurrentKeyCode = KeyCode.None;
-				OnPlayerFinished?.Invoke(m_iPlayerIndex);
 			}
 			else
 			{
-				m_eCurrentDanceMove = m_DanceSequenceGenerator.listDanceSequence[m_iCurrentMoveIndex];
+				m_eCurrentDanceMove = m_arCurrentSequence[m_iCurrentMoveIndex];
 				m_CurrentKeyCode = m_MoveToKey[m_eCurrentDanceMove];
 				OnPlayerNextDanceMoveChanged?.Invoke(m_iPlayerIndex, m_eCurrentDanceMove);
 			}
@@ -99,8 +137,8 @@ public class PlayerController : MonoBehaviour
 
 	private void Update()
 	{
-		if (iCurrentMoveIndex == c_iNotStartedIndex)
-			iCurrentMoveIndex = 0;
+		if (iCurrentSequenceIndex == c_iNotStartedIndex)
+			iCurrentSequenceIndex = 0;
 
 		if (Input.GetKeyDown(m_CurrentKeyCode))
 		{
