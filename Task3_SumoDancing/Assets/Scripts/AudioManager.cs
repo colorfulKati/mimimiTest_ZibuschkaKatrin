@@ -5,11 +5,17 @@ using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-	[SerializeField]
-	private AudioSource m_SFXSource;
+	[Header("Music")]
 	[SerializeField]
 	private AudioSource m_MusicSource;
+	[SerializeField]
+	private AudioClip m_MusicInGame;
+	[SerializeField]
+	private AudioClip m_MusicIntro;
 
+	[Header("SFX")]
+	[SerializeField]
+	private AudioSource m_SFXSource;
 	[SerializeField]
 	private AudioClip m_ClipFinished;
 	[SerializeField]
@@ -19,8 +25,15 @@ public class AudioManager : MonoBehaviour
 	[SerializeField]
 	private AudioClip m_ClipSlime;
 
+	private void Awake()
+	{
+		m_MusicSource.clip = m_MusicIntro;
+		m_MusicSource.Play();
+	}
+
 	private void Start()
 	{
+		GameStateController.OnGameStateChanged += onGameStateChanged;
 		PlayerController.OnPlayerPerformedMove += onPlayerPerformedMove;
 		PlayerController.OnPlayerFinished += onPlayerFinished;
 		SlimeController.OnAddedSlime += onAddedSlime;
@@ -28,9 +41,24 @@ public class AudioManager : MonoBehaviour
 
 	private void OnDestroy()
 	{
+		GameStateController.OnGameStateChanged -= onGameStateChanged;
 		PlayerController.OnPlayerPerformedMove -= onPlayerPerformedMove;
 		PlayerController.OnPlayerFinished -= onPlayerFinished;
 		SlimeController.OnAddedSlime -= onAddedSlime;
+	}
+
+	private void onGameStateChanged(GameState _ePrevState, GameState _eCurrentState)
+	{
+		if (_eCurrentState == GameState.InGame)
+		{
+			m_MusicSource.clip = m_MusicInGame;
+			m_MusicSource.Play();
+		}
+		else if (_ePrevState == GameState.InGame)
+		{
+			m_MusicSource.clip = m_MusicIntro;
+			m_MusicSource.Play();
+		}
 	}
 
 	private void onPlayerFinished(int _iPlayerIndex)

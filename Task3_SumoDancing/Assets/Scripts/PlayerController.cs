@@ -199,5 +199,9 @@ public class PlayerController : MonoBehaviour
 		{
 			iCurrentSequenceIndex = 0;
 		}
+		if (_eCurrentState == GameState.AfterGame)
+		{
+			m_SpriteRenderer.sprite = m_SpriteDown;
+		}
 	}
 }

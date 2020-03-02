@@ -2196,8 +2196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d4ed59fafb6f447b83094de46b4b71, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_SFXSource: {fileID: 1191901250}
   m_MusicSource: {fileID: 1120154880}
+  m_MusicInGame: {fileID: 8300000, guid: a68cace2ca19b1648b025633e6f71d70, type: 3}
+  m_MusicIntro: {fileID: 8300000, guid: 7fa738bd9596cb546b27a048729902dd, type: 3}
+  m_SFXSource: {fileID: 1191901250}
   m_ClipFinished: {fileID: 8300000, guid: ac7d1776254bc8e4fb86a96d20ac8e9b, type: 3}
   m_ClipCorrect: {fileID: 8300000, guid: 4c5ed3fdca12a43488b0ac1d2cd34038, type: 3}
   m_ClipWrong: {fileID: 8300000, guid: 727548a0222cc524bbd9643c9d0e79ff, type: 3}
@@ -2477,7 +2479,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: the winnner is
+  m_Text: the winner is
 --- !u!222 &1927993504
 CanvasRenderer:
   m_ObjectHideFlags: 0
