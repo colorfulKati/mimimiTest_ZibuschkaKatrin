@@ -77,6 +77,7 @@ public class PlayerController : MonoBehaviour
 	private Vector3 m_v3OffsetSpriteDown;
 
 	private bool m_bIsWinner = false;
+	private bool m_bOtherPlayerFinishedFirst = false;
 
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
 	private Dictionary<KeyCode, Vector3> m_KeyToSpriteOffset = new Dictionary<KeyCode, Vector3>();
@@ -112,8 +113,12 @@ public class PlayerController : MonoBehaviour
 			{
 				m_iCurrentSequenceIndex = c_iNotStartedIndex;
 				iCurrentMoveIndex = c_iNotStartedIndex;
-				m_bIsWinner = true;
-				OnPlayerFinished?.Invoke(m_iPlayerIndex);
+
+				if (!m_bOtherPlayerFinishedFirst)
+				{
+					m_bIsWinner = true;
+					OnPlayerFinished?.Invoke(m_iPlayerIndex);
+				}
 			}
 			else if(m_iCurrentSequenceIndex == c_iNotStartedIndex)
 			{
@@ -173,12 +178,14 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		GameStateController.OnGameStateChanged += onGameStateChanged;
+		OnPlayerFinished += onPlayerFinished;
 		ExplosionController.OnExplosion += onExplosion;
 	}
 
 	private void OnDestroy()
 	{
 		GameStateController.OnGameStateChanged -= onGameStateChanged;
+		OnPlayerFinished -= onPlayerFinished;
 		ExplosionController.OnExplosion -= onExplosion;
 	}
 
@@ -236,6 +243,7 @@ public class PlayerController : MonoBehaviour
 		if (_eCurrentState == GameState.BeforeGame)
 		{
 			m_bIsWinner = false;
+			m_bOtherPlayerFinishedFirst = false;
 			m_SpriteRenderer.sprite = m_SpriteDown;
 			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteDown;
 			m_SpriteRenderer.transform.localEulerAngles = Vector3.zero;
@@ -249,6 +257,14 @@ public class PlayerController : MonoBehaviour
 			m_SpriteRenderer.sprite = m_SpriteLoser;
 			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteDown;
 			m_SpriteRenderer.transform.localEulerAngles = Vector3.zero;
+		}
+	}
+
+	private void onPlayerFinished(int _iPlayerIndex)
+	{
+		if (_iPlayerIndex != m_iPlayerIndex)
+		{
+			m_bOtherPlayerFinishedFirst = true;
 		}
 	}
 }
