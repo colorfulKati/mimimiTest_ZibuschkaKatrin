@@ -75,7 +75,14 @@ public class AudioManager : MonoBehaviour
 
 	private void onPlayerPerformedMove(int _iPlayerIndex, bool _bCorrect)
 	{
-		m_SFXSource.PlayOneShot(_bCorrect ? m_ClipCorrect : m_ClipWrong);
+		if (_bCorrect)
+		{
+			m_SFXSource.PlayOneShot(m_ClipCorrect, 0.5f);
+		}
+		else
+		{
+			m_SFXSource.PlayOneShot(m_ClipWrong, 1f);
+		}
 	}
 
 	private void onAddedSlime()

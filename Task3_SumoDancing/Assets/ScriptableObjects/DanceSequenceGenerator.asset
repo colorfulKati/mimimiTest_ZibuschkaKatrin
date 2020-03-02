@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d42a1e36a10dfb4082e8e3de5ae43e5, type: 3}
   m_Name: DanceSequenceGenerator
   m_EditorClassIdentifier: 
-  m_iSequenceLength: 1
+  m_iSequenceLength: 7
