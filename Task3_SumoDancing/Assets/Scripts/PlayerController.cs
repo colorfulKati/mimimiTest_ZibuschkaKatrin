@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -14,25 +13,25 @@ public class PlayerController : MonoBehaviour
 	/// Raised, when a player's currently wanted dance move changed.
 	/// Parameters: player index, next dance move
 	/// </summary>
-	public static event Action<int, DanceMove> OnNextDanceMoveChanged;
+	public static event System.Action<int, DanceMove> OnNextDanceMoveChanged;
 
 	/// <summary>
 	/// Raised, when a player performed a dance move.
 	/// Parameters: player index, true if the performed dance move was correct
 	/// </summary>
-	public static event Action<int, bool> OnPlayerPerformedMove;
+	public static event System.Action<int, bool> OnPlayerPerformedMove;
 	
 	/// <summary>
 	/// Raised, when a player is completely finished.
 	/// Parameters: player index
 	/// </summary>
-	public static event Action<int> OnPlayerFinished;
+	public static event System.Action<int> OnPlayerFinished;
 
 	/// <summary>
 	/// Raised, when a player finished a sequence.
 	/// Parameters: player index, finished sequence index
 	/// </summary>
-	public static event Action<int, int> OnPlayerFinishedSequence;
+	public static event System.Action<int, int> OnPlayerFinishedSequence;
 
 	public static Color[] m_PlayerColor = new[] { Color.blue, Color.red };
 
@@ -68,9 +67,19 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Sprite m_SpriteLoser;
 
+	[SerializeField]
+	private Vector3 m_v3OffsetSpriteLeft;
+	[SerializeField]
+	private Vector3 m_v3OffsetSpriteRight;
+	[SerializeField]
+	private Vector3 m_v3OffsetSpriteUp;
+	[SerializeField]
+	private Vector3 m_v3OffsetSpriteDown;
+
 	private bool m_bIsWinner = false;
 
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
+	private Dictionary<KeyCode, Vector3> m_KeyToSpriteOffset = new Dictionary<KeyCode, Vector3>();
 	private Dictionary<DanceMove, KeyCode> m_MoveToKey = new Dictionary<DanceMove, KeyCode>();
 
 	private DanceMove[] m_arCurrentSequence;
@@ -154,6 +163,11 @@ public class PlayerController : MonoBehaviour
 		m_KeyToSprite.Add(m_KeyRight, m_SpriteRight);
 		m_KeyToSprite.Add(m_KeyUp, m_SpriteUp);
 		m_KeyToSprite.Add(m_KeyDown, m_SpriteDown);
+
+		m_KeyToSpriteOffset.Add(m_KeyLeft, m_v3OffsetSpriteLeft);
+		m_KeyToSpriteOffset.Add(m_KeyRight, m_v3OffsetSpriteRight);
+		m_KeyToSpriteOffset.Add(m_KeyUp, m_v3OffsetSpriteUp);
+		m_KeyToSpriteOffset.Add(m_KeyDown, m_v3OffsetSpriteDown);
 	}
 
 	private void Start()
@@ -178,7 +192,11 @@ public class PlayerController : MonoBehaviour
 
 		if (Input.GetKeyDown(m_CurrentKeyCode))
 		{
+			Vector3 v3RandomRotation = new Vector3(0, 0, Random.Range(-3f, 3f));
+
 			m_SpriteRenderer.sprite = m_KeyToSprite[m_CurrentKeyCode];
+			m_SpriteRenderer.transform.localPosition = m_KeyToSpriteOffset[m_CurrentKeyCode];
+			m_SpriteRenderer.transform.localEulerAngles = v3RandomRotation;
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, true);
 
 			eCurrentDanceMove = DanceMove.None;
@@ -188,7 +206,10 @@ public class PlayerController : MonoBehaviour
 		}
 		else if (Input.GetKeyDown(m_KeyLeft) || Input.GetKeyDown(m_KeyRight) || Input.GetKeyDown(m_KeyUp) || Input.GetKeyDown(m_KeyDown))
 		{
+			Vector3 v3RandomRotation = new Vector3(0, 0, Random.Range(-5f, 5f));
 			m_SpriteRenderer.sprite = m_SpriteWrongMove;
+			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteLeft;
+			m_SpriteRenderer.transform.localEulerAngles = v3RandomRotation;
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, false);
 		}
 	}
@@ -209,11 +230,15 @@ public class PlayerController : MonoBehaviour
 		if (_eCurrentState == GameState.Finish)
 		{
 			m_SpriteRenderer.sprite = m_SpriteDown;
+			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteDown;
+			m_SpriteRenderer.transform.localEulerAngles = Vector3.zero;
 		}
 		if (_eCurrentState == GameState.BeforeGame)
 		{
 			m_bIsWinner = false;
 			m_SpriteRenderer.sprite = m_SpriteDown;
+			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteDown;
+			m_SpriteRenderer.transform.localEulerAngles = Vector3.zero;
 		}
 	}
 
@@ -222,6 +247,8 @@ public class PlayerController : MonoBehaviour
 		if (!m_bIsWinner)
 		{
 			m_SpriteRenderer.sprite = m_SpriteLoser;
+			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteDown;
+			m_SpriteRenderer.transform.localEulerAngles = Vector3.zero;
 		}
 	}
 }

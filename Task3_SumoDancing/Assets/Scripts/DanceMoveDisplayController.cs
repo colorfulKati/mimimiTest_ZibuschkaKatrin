@@ -12,6 +12,8 @@ public class DanceMoveDisplayController : MonoBehaviour
 
 	[SerializeField]
 	private Sprite[] m_arIntensity;
+	[SerializeField]
+	private Sprite[] m_arBackgroundSprites;
 
 	private Dictionary<DanceMove, Vector3> m_MoveToRotation = new Dictionary<DanceMove, Vector3>()
 	{
@@ -68,8 +70,9 @@ public class DanceMoveDisplayController : MonoBehaviour
 		}
 		else
 		{
-			m_arDisplayGameObjects[_iPlayerIndex - 1].SetActive(true);
+			m_arDisplayBackgrounds[_iPlayerIndex - 1].sprite = m_arBackgroundSprites[UnityEngine.Random.Range(0, m_arBackgroundSprites.Length)];
 			m_arDirectionTransforms[_iPlayerIndex - 1].eulerAngles = m_MoveToRotation[_eDanceMove];
+			m_arDisplayGameObjects[_iPlayerIndex - 1].SetActive(true);
 		}
 	}
 
