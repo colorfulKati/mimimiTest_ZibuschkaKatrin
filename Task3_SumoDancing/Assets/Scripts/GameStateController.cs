@@ -36,6 +36,13 @@ public class GameStateController : MonoBehaviour
 	private void Start()
 	{
 		PlayerController.OnPlayerFinished += onPlayerFinished;
+		ExplosionController.OnExplosionFinished += onExplosionFinished;
+	}
+
+	private void OnDestroy()
+	{
+		PlayerController.OnPlayerFinished -= onPlayerFinished;
+		ExplosionController.OnExplosionFinished -= onExplosionFinished;
 	}
 
 	private void Update()
@@ -60,6 +67,11 @@ public class GameStateController : MonoBehaviour
 		
 	private void onPlayerFinished(int _iPlayerIndex)
 	{
+		eCurrentState = GameState.Finish;
+	}
+
+	private void onExplosionFinished()
+	{
 		eCurrentState = GameState.AfterGame;
 	}
 }
@@ -68,6 +80,7 @@ public enum GameState
 {
 	BeforeGame,
 	InGame,
+	Finish,
 	AfterGame,
 	None
 }

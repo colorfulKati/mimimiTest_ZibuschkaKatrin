@@ -65,7 +65,11 @@ public class PlayerController : MonoBehaviour
 	private Sprite m_SpriteDown;
 	[SerializeField]
 	private Sprite m_SpriteWrongMove;
-	
+	[SerializeField]
+	private Sprite m_SpriteLoser;
+
+	private bool m_bIsWinner = false;
+
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
 	private Dictionary<DanceMove, KeyCode> m_MoveToKey = new Dictionary<DanceMove, KeyCode>();
 
@@ -99,6 +103,7 @@ public class PlayerController : MonoBehaviour
 			{
 				m_iCurrentSequenceIndex = c_iNotStartedIndex;
 				iCurrentMoveIndex = c_iNotStartedIndex;
+				m_bIsWinner = true;
 				OnPlayerFinished?.Invoke(m_iPlayerIndex);
 			}
 			else if(m_iCurrentSequenceIndex == c_iNotStartedIndex)
@@ -154,11 +159,13 @@ public class PlayerController : MonoBehaviour
 	private void Start()
 	{
 		GameStateController.OnGameStateChanged += onGameStateChanged;
+		ExplosionController.OnExplosion += onExplosion;
 	}
 
 	private void OnDestroy()
 	{
 		GameStateController.OnGameStateChanged -= onGameStateChanged;
+		ExplosionController.OnExplosion -= onExplosion;
 	}
 
 	private void Update()
@@ -199,9 +206,22 @@ public class PlayerController : MonoBehaviour
 		{
 			iCurrentSequenceIndex = 0;
 		}
-		if (_eCurrentState == GameState.AfterGame)
+		if (_eCurrentState == GameState.Finish)
 		{
 			m_SpriteRenderer.sprite = m_SpriteDown;
+		}
+		if (_eCurrentState == GameState.BeforeGame)
+		{
+			m_bIsWinner = false;
+			m_SpriteRenderer.sprite = m_SpriteDown;
+		}
+	}
+
+	private void onExplosion()
+	{
+		if (!m_bIsWinner)
+		{
+			m_SpriteRenderer.sprite = m_SpriteLoser;
 		}
 	}
 }

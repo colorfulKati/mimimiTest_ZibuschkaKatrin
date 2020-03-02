@@ -41,6 +41,9 @@ public class SlimeController : MonoBehaviour
 
 	private void updateSlime(int _iPlayerIndex, int _iFinishedSequenceIndex)
 	{
+		if (_iFinishedSequenceIndex >= m_arSlimePerPlayer[_iPlayerIndex - 1].Length)
+			return;
+
 		m_arSlimePerPlayer[_iPlayerIndex - 1][_iFinishedSequenceIndex].enabled = true;
 		OnAddedSlime?.Invoke();
 	}

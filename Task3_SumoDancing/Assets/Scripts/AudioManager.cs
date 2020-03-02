@@ -24,6 +24,8 @@ public class AudioManager : MonoBehaviour
 	private AudioClip m_ClipWrong;
 	[SerializeField]
 	private AudioClip m_ClipSlime;
+	[SerializeField]
+	private AudioClip m_ClipExplosion;
 
 	private void Awake()
 	{
@@ -35,16 +37,16 @@ public class AudioManager : MonoBehaviour
 	{
 		GameStateController.OnGameStateChanged += onGameStateChanged;
 		PlayerController.OnPlayerPerformedMove += onPlayerPerformedMove;
-		PlayerController.OnPlayerFinished += onPlayerFinished;
 		SlimeController.OnAddedSlime += onAddedSlime;
+		ExplosionController.OnExplosion += onExplosion;
 	}
 
 	private void OnDestroy()
 	{
 		GameStateController.OnGameStateChanged -= onGameStateChanged;
 		PlayerController.OnPlayerPerformedMove -= onPlayerPerformedMove;
-		PlayerController.OnPlayerFinished -= onPlayerFinished;
 		SlimeController.OnAddedSlime -= onAddedSlime;
+		ExplosionController.OnExplosion -= onExplosion;
 	}
 
 	private void onGameStateChanged(GameState _ePrevState, GameState _eCurrentState)
@@ -54,16 +56,21 @@ public class AudioManager : MonoBehaviour
 			m_MusicSource.clip = m_MusicInGame;
 			m_MusicSource.Play();
 		}
-		else if (_ePrevState == GameState.InGame)
+		else if (_eCurrentState == GameState.Finish)
+		{
+			m_MusicSource.Stop();
+		}
+		else if(_ePrevState == GameState.Finish)
 		{
 			m_MusicSource.clip = m_MusicIntro;
 			m_MusicSource.Play();
-		}
-	}
 
-	private void onPlayerFinished(int _iPlayerIndex)
-	{
-		m_SFXSource.PlayOneShot(m_ClipFinished);
+		}
+
+		if(_eCurrentState == GameState.AfterGame)
+		{
+			m_SFXSource.PlayOneShot(m_ClipFinished, 0.3f);
+		}
 	}
 
 	private void onPlayerPerformedMove(int _iPlayerIndex, bool _bCorrect)
@@ -74,5 +81,10 @@ public class AudioManager : MonoBehaviour
 	private void onAddedSlime()
 	{
 		m_SFXSource.PlayOneShot(m_ClipSlime);
+	}
+
+	private void onExplosion()
+	{
+		m_SFXSource.PlayOneShot(m_ClipExplosion);
 	}
 }
