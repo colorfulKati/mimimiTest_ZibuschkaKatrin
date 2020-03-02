@@ -7,12 +7,15 @@ public class PlayerController : MonoBehaviour
 {
 	private const int c_iNotStartedIndex = -1;
 	private const int c_iFinishedIndex = -2;
+	private const float c_fNextMoveDelay = 0.15f;
+
+	private static WaitForSeconds m_WaitForSeconds = new WaitForSeconds(c_fNextMoveDelay);
 
 	/// <summary>
 	/// Raised, when a player's currently wanted dance move changed.
 	/// Parameters: player index, next dance move
 	/// </summary>
-	public static event Action<int, DanceMove> OnPlayerNextDanceMoveChanged;
+	public static event Action<int, DanceMove> OnNextDanceMoveChanged;
 
 	/// <summary>
 	/// Raised, when a player performed a dance move.
@@ -68,6 +71,15 @@ public class PlayerController : MonoBehaviour
 	private DanceMove[] m_arCurrentSequence;
 	private KeyCode m_CurrentKeyCode = KeyCode.None;
 	private DanceMove m_eCurrentDanceMove = DanceMove.None;
+	private DanceMove eCurrentDanceMove
+	{
+		get { return m_eCurrentDanceMove; }
+		set
+		{
+			m_eCurrentDanceMove = value;
+			OnNextDanceMoveChanged?.Invoke(m_iPlayerIndex, m_eCurrentDanceMove);
+		}
+	}
 
 	private int m_iCurrentSequenceIndex = c_iNotStartedIndex;
 	private int iCurrentSequenceIndex
@@ -115,9 +127,8 @@ public class PlayerController : MonoBehaviour
 			}
 			else
 			{
-				m_eCurrentDanceMove = m_arCurrentSequence[m_iCurrentMoveIndex];
-				m_CurrentKeyCode = m_MoveToKey[m_eCurrentDanceMove];
-				OnPlayerNextDanceMoveChanged?.Invoke(m_iPlayerIndex, m_eCurrentDanceMove);
+				eCurrentDanceMove = m_arCurrentSequence[m_iCurrentMoveIndex];
+				m_CurrentKeyCode = m_MoveToKey[eCurrentDanceMove];
 			}
 		}
 	}
@@ -140,17 +151,30 @@ public class PlayerController : MonoBehaviour
 		if (iCurrentSequenceIndex == c_iNotStartedIndex)
 			iCurrentSequenceIndex = 0;
 
+		if (eCurrentDanceMove == DanceMove.None)
+			return;
+
 		if (Input.GetKeyDown(m_CurrentKeyCode))
 		{
 			m_SpriteRenderer.sprite = m_KeyToSprite[m_CurrentKeyCode];
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, true);
 
-			iCurrentMoveIndex++;
+			eCurrentDanceMove = DanceMove.None;
+
+			this.StartCoroutine(goToNextMoveDelayed());
+
 		}
 		else if (Input.GetKeyDown(m_KeyLeft) || Input.GetKeyDown(m_KeyRight) || Input.GetKeyDown(m_KeyUp) || Input.GetKeyDown(m_KeyDown))
 		{
 			m_SpriteRenderer.sprite = m_SpriteWrongMove;
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, false);
 		}
+	}
+
+	private IEnumerator goToNextMoveDelayed()
+	{
+		yield return m_WaitForSeconds;
+
+		iCurrentMoveIndex++;
 	}
 }

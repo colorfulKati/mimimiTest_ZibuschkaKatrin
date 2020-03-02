@@ -32,19 +32,27 @@ public class DanceMoveDisplayController : MonoBehaviour
 
 	private void Start()
 	{
-		PlayerController.OnPlayerNextDanceMoveChanged += updateDirection;
+		PlayerController.OnNextDanceMoveChanged += updateDirection;
 		PlayerController.OnPlayerFinished += onFinished;
 	}
 
 	private void OnDestroy()
 	{
-		PlayerController.OnPlayerNextDanceMoveChanged -= updateDirection;
+		PlayerController.OnNextDanceMoveChanged -= updateDirection;
 		PlayerController.OnPlayerFinished -= onFinished;
 	}
 
 	private void updateDirection(int _iPlayerIndex, DanceMove _eDanceMove)
 	{
-		m_arDirections[_iPlayerIndex - 1].transform.eulerAngles = m_MoveToRotation[_eDanceMove];
+		if (_eDanceMove == DanceMove.None)
+		{
+			m_arDisplayBackgrounds[_iPlayerIndex - 1].gameObject.SetActive(false);
+		}
+		else
+		{
+			m_arDisplayBackgrounds[_iPlayerIndex - 1].gameObject.SetActive(true);
+			m_arDirections[_iPlayerIndex - 1].transform.eulerAngles = m_MoveToRotation[_eDanceMove];
+		}
 	}
 	
 	private void onFinished(int _iPlayerIndex)
