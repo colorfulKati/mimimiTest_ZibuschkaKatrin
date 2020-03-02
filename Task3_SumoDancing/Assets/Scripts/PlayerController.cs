@@ -218,6 +218,8 @@ public class PlayerController : MonoBehaviour
 			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteLeft;
 			m_SpriteRenderer.transform.localEulerAngles = v3RandomRotation;
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, false);
+			
+			this.StartCoroutine(blockCurrentMoveDelayed(eCurrentDanceMove));
 		}
 	}
 
@@ -226,6 +228,22 @@ public class PlayerController : MonoBehaviour
 		yield return m_WaitForSeconds;
 
 		iCurrentMoveIndex++;
+	}
+
+	private IEnumerator blockCurrentMoveDelayed(DanceMove _ePreviousMove)
+	{
+		eCurrentDanceMove = DanceMove.None;
+
+		yield return m_WaitForSeconds;
+
+		DanceMove eNewMove;
+		do
+		{
+			eNewMove = (DanceMove)Random.Range(0, 4);
+		} while (eNewMove == _ePreviousMove);
+
+		eCurrentDanceMove = eNewMove;
+		m_CurrentKeyCode = m_MoveToKey[eCurrentDanceMove];
 	}
 
 	private void onGameStateChanged(GameState _ePrevState, GameState _eCurrentState)
