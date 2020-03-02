@@ -12,7 +12,7 @@ public class PlayerController : MonoBehaviour
 	/// Raised, when a player's currently wanted dance move changed.
 	/// Parameters: player index, next dance move
 	/// </summary>
-	public static event Action<int, string> OnPlayerNextDanceMoveChanged;
+	public static event Action<int, DanceMove> OnPlayerNextDanceMoveChanged;
 
 	/// <summary>
 	/// Raised, when a player performed a dance move.
@@ -57,10 +57,10 @@ public class PlayerController : MonoBehaviour
 	private Sprite m_SpriteWrongMove;
 	
 	private Dictionary<KeyCode, Sprite> m_KeyToSprite = new Dictionary<KeyCode, Sprite>();
-	private Dictionary<DanceMoves, KeyCode> m_MoveToKey = new Dictionary<DanceMoves, KeyCode>();
+	private Dictionary<DanceMove, KeyCode> m_MoveToKey = new Dictionary<DanceMove, KeyCode>();
 
 	private KeyCode m_CurrentKeyCode = KeyCode.None;
-	private DanceMoves m_eCurrentDanceMove = DanceMoves.None;
+	private DanceMove m_eCurrentDanceMove = DanceMove.None;
 	private int m_iCurrentMoveIndex = c_iNotStartedIndex;
 	private int iCurrentMoveIndex
 	{
@@ -79,17 +79,17 @@ public class PlayerController : MonoBehaviour
 			{
 				m_eCurrentDanceMove = m_DanceSequenceGenerator.listDanceSequence[m_iCurrentMoveIndex];
 				m_CurrentKeyCode = m_MoveToKey[m_eCurrentDanceMove];
-				OnPlayerNextDanceMoveChanged?.Invoke(m_iPlayerIndex, m_eCurrentDanceMove.ToString());
+				OnPlayerNextDanceMoveChanged?.Invoke(m_iPlayerIndex, m_eCurrentDanceMove);
 			}
 		}
 	}
 
 	private void Start()
 	{
-		m_MoveToKey.Add(DanceMoves.Left, m_KeyLeft);
-		m_MoveToKey.Add(DanceMoves.Right, m_KeyRight);
-		m_MoveToKey.Add(DanceMoves.Up, m_KeyUp);
-		m_MoveToKey.Add(DanceMoves.Down, m_KeyDown);
+		m_MoveToKey.Add(DanceMove.Left, m_KeyLeft);
+		m_MoveToKey.Add(DanceMove.Right, m_KeyRight);
+		m_MoveToKey.Add(DanceMove.Up, m_KeyUp);
+		m_MoveToKey.Add(DanceMove.Down, m_KeyDown);
 
 		m_KeyToSprite.Add(m_KeyLeft, m_SpriteLeft);
 		m_KeyToSprite.Add(m_KeyRight, m_SpriteRight);

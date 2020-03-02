@@ -2,30 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//[CreateAssetMenu(fileName = "New DanceSequenceGenerator", menuName = "ScriptableObjects/DanceSequenceGenerator")]
 public class DanceSequenceGenerator : MonoBehaviour
 {
 	[SerializeField]
 	private int m_iSequenceLength;
 
-	private DanceMoves[] m_arDanceSequence;
+	private DanceMove[] m_arDanceSequence;
 
-	public IReadOnlyList<DanceMoves> listDanceSequence
+	public IReadOnlyList<DanceMove> listDanceSequence
 	{
 		get { return System.Array.AsReadOnly(m_arDanceSequence); }
 	}
 
 	private void Awake()
 	{
-		m_arDanceSequence = new DanceMoves[m_iSequenceLength];
+		m_arDanceSequence = new DanceMove[m_iSequenceLength];
 
 		for (int i = 0; i < m_iSequenceLength; i++)
 		{
-			m_arDanceSequence[i] = (DanceMoves)Random.Range(0, 4);
+			m_arDanceSequence[i] = (DanceMove)Random.Range(0, 4);
 		}
 	}
 }
 
-public enum DanceMoves
+public enum DanceMove
 {
 	Left = 0,
 	Right = 1,
