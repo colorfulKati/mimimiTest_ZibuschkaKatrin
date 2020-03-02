@@ -1628,6 +1628,10 @@ MonoBehaviour:
   m_arDirections:
   - {fileID: 1092901310}
   - {fileID: 501733844}
+  m_arIntensity:
+  - {fileID: 21300000, guid: 882291fd28150ef4abf9147a8c884cad, type: 3}
+  - {fileID: 21300000, guid: fca25e987077a40438cd18dd05268954, type: 3}
+  - {fileID: 21300000, guid: 88b1bb1f0c5ce90408fdd1b5b11786bd, type: 3}
 --- !u!1 &1624523246
 GameObject:
   m_ObjectHideFlags: 0
