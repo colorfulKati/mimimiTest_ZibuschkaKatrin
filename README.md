@@ -6,6 +6,8 @@ Task 1 - daWindci
   
 Task 2 - Volcano
   Rocks can be spawned by pressing [space] on the keyboard and clicking the UI button in the upper right corner of the screen.
+  After quite a few git issues, everything I did after 02.03.2020 16:00 was overwritten.
+  -> Textures and some functionality are only visible in the latest build at https://drive.google.com/open?id=12HMMBsQOrpciLCAqf1V7tsoPY54kTlgX
   
 Task 3 - Sumo Dancing
   This game is a local multiplayer in which 2 players compete in being the fastest and most precise dancers in the whole town.
