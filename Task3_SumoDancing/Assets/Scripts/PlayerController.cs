@@ -218,7 +218,7 @@ public class PlayerController : MonoBehaviour
 			m_SpriteRenderer.transform.localPosition = m_v3OffsetSpriteLeft;
 			m_SpriteRenderer.transform.localEulerAngles = v3RandomRotation;
 			OnPlayerPerformedMove?.Invoke(m_iPlayerIndex, false);
-			
+
 			this.StartCoroutine(blockCurrentMoveDelayed(eCurrentDanceMove));
 		}
 	}
